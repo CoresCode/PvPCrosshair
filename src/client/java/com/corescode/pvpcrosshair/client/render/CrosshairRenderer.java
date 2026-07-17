@@ -18,36 +18,107 @@ public final class CrosshairRenderer {
         int cx = graphics.guiWidth() / 2;
         int cy = graphics.guiHeight() / 2;
 
-        /*
-         * STAR PROTOTYPE (Gap reduced by 1 pixel)
-         */
+        drawStar(graphics, cx, cy);
+    }
 
-        // Top
-        graphics.fill(cx, cy - 5, cx + 1, cy - 1, COLOR);
+    /*
+     * ============================
+     * Crosshair Styles
+     * ============================
+     */
 
-        // Bottom
-        graphics.fill(cx, cy + 2, cx + 1, cy + 6, COLOR);
+    private static void drawStar(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy
+    ) {
 
-        // Left
-        graphics.fill(cx - 5, cy, cx - 1, cy + 1, COLOR);
+        drawVerticalArm(graphics, cx, cy, true);
+        drawVerticalArm(graphics, cx, cy, false);
 
-        // Right
-        graphics.fill(cx + 2, cy, cx + 6, cy + 1, COLOR);
+        drawHorizontalArm(graphics, cx, cy, true);
+        drawHorizontalArm(graphics, cx, cy, false);
 
-        // Top Left
-        graphics.fill(cx - 3, cy - 3, cx - 2, cy - 2, COLOR);
-        graphics.fill(cx - 2, cy - 2, cx - 1, cy - 1, COLOR);
+        drawDiagonal(graphics, cx, cy, -1, -1);
+        drawDiagonal(graphics, cx, cy, 1, -1);
+        drawDiagonal(graphics, cx, cy, -1, 1);
+        drawDiagonal(graphics, cx, cy, 1, 1);
+    }
 
-        // Top Right
-        graphics.fill(cx + 3, cy - 3, cx + 4, cy - 2, COLOR);
-        graphics.fill(cx + 2, cy - 2, cx + 3, cy - 1, COLOR);
+    /*
+     * ============================
+     * Arm Rendering
+     * ============================
+     */
 
-        // Bottom Left
-        graphics.fill(cx - 3, cy + 3, cx - 2, cy + 4, COLOR);
-        graphics.fill(cx - 2, cy + 2, cx - 1, cy + 3, COLOR);
+    private static void drawVerticalArm(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            boolean top
+    ) {
 
-        // Bottom Right
-        graphics.fill(cx + 3, cy + 3, cx + 4, cy + 4, COLOR);
-        graphics.fill(cx + 2, cy + 2, cx + 3, cy + 3, COLOR);
+        int start = top
+                ? cy - CrosshairShapes.OUTER_RADIUS
+                : cy + CrosshairShapes.INNER_RADIUS;
+
+        int end = top
+                ? cy - CrosshairShapes.INNER_RADIUS + 1
+                : cy + CrosshairShapes.OUTER_RADIUS + 1;
+
+        graphics.fill(
+                cx,
+                start,
+                cx + 1,
+                end,
+                COLOR
+        );
+    }
+
+    private static void drawHorizontalArm(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            boolean left
+    ) {
+
+        int start = left
+                ? cx - CrosshairShapes.OUTER_RADIUS
+                : cx + CrosshairShapes.INNER_RADIUS;
+
+        int end = left
+                ? cx - CrosshairShapes.INNER_RADIUS + 1
+                : cx + CrosshairShapes.OUTER_RADIUS + 1;
+
+        graphics.fill(
+                start,
+                cy,
+                end,
+                cy + 1,
+                COLOR
+        );
+    }
+
+    private static void drawDiagonal(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            int dx,
+            int dy
+    ) {
+
+        for (int i = 0; i < CrosshairShapes.DIAGONAL_LENGTH; i++) {
+
+            int x = cx + dx * (CrosshairShapes.INNER_RADIUS + i);
+            int y = cy + dy * (CrosshairShapes.INNER_RADIUS + i);
+
+            graphics.fill(
+                    x,
+                    y,
+                    x + 1,
+                    y + 1,
+                    COLOR
+            );
+        }
     }
 }
