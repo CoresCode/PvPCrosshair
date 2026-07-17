@@ -1,11 +1,12 @@
 package com.corescode.pvpcrosshair.client.render;
 
+import com.corescode.pvpcrosshair.client.color.ColorResolver;
+import com.corescode.pvpcrosshair.client.detection.TargetDetector;
+import com.corescode.pvpcrosshair.client.detection.TargetState;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public final class CrosshairRenderer {
-
-    private static final int COLOR = 0xFFFFFFFF;
 
     private CrosshairRenderer() {
     }
@@ -18,17 +19,43 @@ public final class CrosshairRenderer {
         int cx = graphics.guiWidth() / 2;
         int cy = graphics.guiHeight() / 2;
 
-        CrosshairStyle style = CrosshairStyle.DIAMOND;
+        TargetState state = TargetDetector.getState();
+        int color = ColorResolver.getColor(state);
 
-        switch (style) {
+        // TODO: Replace with config value later
+        CrosshairStyle style = CrosshairStyle.STAR;
 
-            case VANILLA -> drawVanilla(graphics, cx, cy);
+        switch (state) {
 
-            case STAR -> drawStar(graphics, cx, cy);
+            case IDLE -> drawIdle(graphics, cx, cy, color);
 
-            case DIAMOND -> drawDiamond(graphics, cx, cy);
+            case TARGET -> {
 
-            case CORNER -> drawCorner(graphics, cx, cy);
+                switch (style) {
+
+                    case VANILLA -> drawVanilla(graphics, cx, cy, color);
+
+                    case STAR -> drawStar(graphics, cx, cy, color);
+
+                    case CHEVRON -> drawChevron(graphics, cx, cy, color);
+
+                    case CORNER -> drawCorner(graphics, cx, cy, color);
+                }
+            }
+
+            case SHIELD -> {
+
+                switch (style) {
+
+                    case VANILLA -> drawVanilla(graphics, cx, cy, color);
+
+                    case STAR -> drawStar(graphics, cx, cy, color);
+
+                    case CHEVRON -> drawChevron(graphics, cx, cy, color);
+
+                    case CORNER -> drawCorner(graphics, cx, cy, color);
+                }
+            }
         }
     }
 
@@ -41,52 +68,69 @@ public final class CrosshairRenderer {
     private static void drawStar(
             GuiGraphicsExtractor graphics,
             int cx,
-            int cy
+            int cy,
+            int color
     ) {
 
-        drawVerticalArm(graphics, cx, cy, true);
-        drawVerticalArm(graphics, cx, cy, false);
+        drawVerticalArm(graphics, cx, cy, true, color);
+        drawVerticalArm(graphics, cx, cy, false, color);
 
-        drawHorizontalArm(graphics, cx, cy, true);
-        drawHorizontalArm(graphics, cx, cy, false);
+        drawHorizontalArm(graphics, cx, cy, true, color);
+        drawHorizontalArm(graphics, cx, cy, false, color);
 
-        drawDiagonal(graphics, cx, cy, -1, -1);
-        drawDiagonal(graphics, cx, cy, 1, -1);
-        drawDiagonal(graphics, cx, cy, -1, 1);
-        drawDiagonal(graphics, cx, cy, 1, 1);
+        drawDiagonal(graphics, cx, cy, -1, -1, color);
+        drawDiagonal(graphics, cx, cy, 1, -1, color);
+        drawDiagonal(graphics, cx, cy, -1, 1, color);
+        drawDiagonal(graphics, cx, cy, 1, 1, color);
     }
+
     private static void drawVanilla(
             GuiGraphicsExtractor graphics,
             int cx,
-            int cy
+            int cy,
+            int color
     ) {
 
-        drawVerticalArm(graphics, cx, cy, true);
-        drawVerticalArm(graphics, cx, cy, false);
+        drawVerticalArm(graphics, cx, cy, true, color);
+        drawVerticalArm(graphics, cx, cy, false, color);
 
-        drawHorizontalArm(graphics, cx, cy, true);
-        drawHorizontalArm(graphics, cx, cy, false);
+        drawHorizontalArm(graphics, cx, cy, true, color);
+        drawHorizontalArm(graphics, cx, cy, false, color);
     }
 
-    private static void drawDiamond(
+    private static void drawChevron(
             GuiGraphicsExtractor graphics,
             int cx,
-            int cy
+            int cy,
+            int color
     ) {
 
-        // Left Chevron
-        drawDiagonalSegment(graphics, cx - 2, cy - 1, -1, -1);
-        drawDiagonalSegment(graphics, cx - 2, cy + 1, -1, 1);
+        drawDiagonalSegment(graphics, cx - 2, cy - 1, -1, -1, color);
+        drawDiagonalSegment(graphics, cx - 2, cy + 1, -1, 1, color);
 
-        // Right Chevron
-        drawDiagonalSegment(graphics, cx + 2, cy - 1, 1, -1);
-        drawDiagonalSegment(graphics, cx + 2, cy + 1, 1, 1);
+        drawDiagonalSegment(graphics, cx + 2, cy - 1, 1, -1, color);
+        drawDiagonalSegment(graphics, cx + 2, cy + 1, 1, 1, color);
+    }
+
+    private static void drawIdle(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            int color
+    ) {
+
+        graphics.fill(cx, cy - 2, cx + 1, cy, color);
+        graphics.fill(cx, cy + 1, cx + 1, cy + 3, color);
+
+        graphics.fill(cx - 2, cy, cx, cy + 1, color);
+        graphics.fill(cx + 1, cy, cx + 3, cy + 1, color);
     }
 
     private static void drawCorner(
             GuiGraphicsExtractor graphics,
             int cx,
-            int cy
+            int cy,
+            int color
     ) {
 
         // TODO
@@ -102,7 +146,8 @@ public final class CrosshairRenderer {
             GuiGraphicsExtractor graphics,
             int cx,
             int cy,
-            boolean top
+            boolean top,
+            int color
     ) {
 
         int start = top
@@ -118,7 +163,7 @@ public final class CrosshairRenderer {
                 start,
                 cx + 1,
                 end,
-                COLOR
+                color
         );
     }
 
@@ -126,7 +171,8 @@ public final class CrosshairRenderer {
             GuiGraphicsExtractor graphics,
             int cx,
             int cy,
-            boolean left
+            boolean left,
+            int color
     ) {
 
         int start = left
@@ -142,7 +188,7 @@ public final class CrosshairRenderer {
                 cy,
                 end,
                 cy + 1,
-                COLOR
+                color
         );
     }
 
@@ -151,7 +197,8 @@ public final class CrosshairRenderer {
             int cx,
             int cy,
             int dx,
-            int dy
+            int dy,
+            int color
     ) {
 
         for (int i = 0; i < CrosshairShapes.DIAGONAL_LENGTH; i++) {
@@ -164,7 +211,7 @@ public final class CrosshairRenderer {
                     y,
                     x + 1,
                     y + 1,
-                    COLOR
+                    color
             );
         }
     }
@@ -174,7 +221,8 @@ public final class CrosshairRenderer {
             int startX,
             int startY,
             int dx,
-            int dy
+            int dy,
+            int color
     ) {
 
         for (int i = 0; i < 3; i++) {
@@ -184,7 +232,7 @@ public final class CrosshairRenderer {
                     startY + dy * i,
                     startX + dx * i + 1,
                     startY + dy * i + 1,
-                    COLOR
+                    color
             );
         }
     }

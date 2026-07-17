@@ -4,7 +4,7 @@ public enum CrosshairStyle {
 
     VANILLA,
     STAR,
-    DIAMOND,
+    CHEVRON,
     CORNER
 
 }
