@@ -2,11 +2,10 @@
 	"required": true,
 	"package": "com.corescode.pvpcrosshair.client.mixin",
 	"compatibilityLevel": "JAVA_25",
-	"client": [],
+	"client": [
+		"HudMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
 	}
 }
