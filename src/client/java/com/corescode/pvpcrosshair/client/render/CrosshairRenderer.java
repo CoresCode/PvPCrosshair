@@ -8,6 +8,16 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.core.BlockPos;
+import org.jspecify.annotations.Nullable;
+
 public final class CrosshairRenderer {
 
     private static final Minecraft MC = Minecraft.getInstance();
@@ -36,7 +46,7 @@ public final class CrosshairRenderer {
 
             case IDLE -> {
 
-                drawVanilla(graphics, cx, cy, color);
+                drawIdleVanilla(graphics, cx, cy, color);
             }
 
             case TARGET -> {
@@ -111,6 +121,14 @@ public final class CrosshairRenderer {
             return false;
         }
 
+        if (MC.gameMode == null) {
+            return false;
+        }
+
+        if (MC.gameMode.getPlayerMode() == GameType.SPECTATOR) {
+            return canRenderCrosshairForSpectator(MC.hitResult);
+        }
+
         return true;
     }
 
@@ -120,17 +138,6 @@ public final class CrosshairRenderer {
      * ============================
      */
 
-    private static void drawStar(
-            GuiGraphicsExtractor graphics,
-            int cx,
-            int cy,
-            int color
-    ) {
-
-        drawVanilla(graphics, cx, cy, color);
-
-        drawDiagonals(graphics, cx, cy, color);
-    }
 
     private static void drawVanilla(
             GuiGraphicsExtractor graphics,
@@ -139,11 +146,25 @@ public final class CrosshairRenderer {
             int color
     ) {
 
-        drawVerticalArm(graphics, cx, cy, true, color);
-        drawVerticalArm(graphics, cx, cy, false, color);
+        drawScaledVerticalArm(graphics, cx, cy, true, color);
+        drawScaledVerticalArm(graphics, cx, cy, false, color);
 
-        drawHorizontalArm(graphics, cx, cy, true, color);
-        drawHorizontalArm(graphics, cx, cy, false, color);
+        drawScaledHorizontalArm(graphics, cx, cy, true, color);
+        drawScaledHorizontalArm(graphics, cx, cy, false, color);
+    }
+
+    private static void drawIdleVanilla(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            int color
+    ) {
+
+        drawIdleVerticalArm(graphics, cx, cy, true, color);
+        drawIdleVerticalArm(graphics, cx, cy, false, color);
+
+        drawIdleHorizontalArm(graphics, cx, cy, true, color);
+        drawIdleHorizontalArm(graphics, cx, cy, false, color);
     }
 
     private static void drawDiagonals(
@@ -231,7 +252,7 @@ public final class CrosshairRenderer {
         );
     }
 
-    private static void drawVerticalArm(
+    private static void drawScaledVerticalArm(
             GuiGraphicsExtractor graphics,
             int cx,
             int cy,
@@ -240,12 +261,12 @@ public final class CrosshairRenderer {
     ) {
 
         int start = top
-                ? cy - CrosshairShapes.OUTER_RADIUS
-                : cy + CrosshairShapes.INNER_RADIUS;
+                ? cy - CrosshairShapes.outerRadius()
+                : cy + CrosshairShapes.innerRadius();
 
         int end = top
-                ? cy - CrosshairShapes.INNER_RADIUS + 1
-                : cy + CrosshairShapes.OUTER_RADIUS + 1;
+                ? cy - CrosshairShapes.innerRadius() + 1
+                : cy + CrosshairShapes.outerRadius() + 1;
 
         graphics.fill(
                 cx,
@@ -256,7 +277,7 @@ public final class CrosshairRenderer {
         );
     }
 
-    private static void drawHorizontalArm(
+    private static void drawScaledHorizontalArm(
             GuiGraphicsExtractor graphics,
             int cx,
             int cy,
@@ -265,12 +286,62 @@ public final class CrosshairRenderer {
     ) {
 
         int start = left
-                ? cx - CrosshairShapes.OUTER_RADIUS
-                : cx + CrosshairShapes.INNER_RADIUS;
+                ? cx - CrosshairShapes.outerRadius()
+                : cx + CrosshairShapes.innerRadius();
 
         int end = left
-                ? cx - CrosshairShapes.INNER_RADIUS + 1
-                : cx + CrosshairShapes.OUTER_RADIUS + 1;
+                ? cx - CrosshairShapes.innerRadius() + 1
+                : cx + CrosshairShapes.outerRadius() + 1;
+
+        graphics.fill(
+                start,
+                cy,
+                end,
+                cy + 1,
+                color
+        );
+    }
+
+    private static void drawIdleVerticalArm(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            boolean top,
+            int color
+    ) {
+
+        int start = top
+                ? cy - 5
+                : cy + 2;
+
+        int end = top
+                ? cy - 1
+                : cy + 6;
+
+        graphics.fill(
+                cx,
+                start,
+                cx + 1,
+                end,
+                color
+        );
+    }
+
+    private static void drawIdleHorizontalArm(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            boolean left,
+            int color
+    ) {
+
+        int start = left
+                ? cx - 5
+                : cx + 2;
+
+        int end = left
+                ? cx - 1
+                : cx + 6;
 
         graphics.fill(
                 start,
@@ -290,10 +361,10 @@ public final class CrosshairRenderer {
             int color
     ) {
 
-        for (int i = 0; i < CrosshairShapes.DIAGONAL_LENGTH; i++) {
+        for (int i = 0; i < CrosshairShapes.diagonalLength(); i++) {
 
-            int x = cx + dx * (CrosshairShapes.INNER_RADIUS + i);
-            int y = cy + dy * (CrosshairShapes.INNER_RADIUS + i);
+            int x = cx + dx * (CrosshairShapes.innerRadius() + i);
+            int y = cy + dy * (CrosshairShapes.innerRadius() + i);
 
             graphics.fill(
                     x,
@@ -324,5 +395,28 @@ public final class CrosshairRenderer {
                     color
             );
         }
+    }
+
+    private static boolean canRenderCrosshairForSpectator(@Nullable HitResult hitResult) {
+
+        if (hitResult == null) {
+            return false;
+        }
+
+        if (hitResult.getType() == Type.ENTITY) {
+            return ((EntityHitResult) hitResult).getEntity() instanceof MenuProvider;
+        }
+
+        if (hitResult.getType() == Type.BLOCK) {
+
+            BlockPos pos = ((BlockHitResult) hitResult).getBlockPos();
+
+            Level level = MC.level;
+
+            return level != null
+                    && level.getBlockState(pos).getMenuProvider(level, pos) != null;
+        }
+
+        return false;
     }
 }

@@ -2,7 +2,6 @@ package com.corescode.pvpcrosshair.client.color;
 
 import com.corescode.pvpcrosshair.client.config.ConfigManager;
 import com.corescode.pvpcrosshair.client.detection.TargetState;
-import com.corescode.pvpcrosshair.client.util.ColorUtil;
 
 public final class ColorResolver {
 
@@ -13,20 +12,11 @@ public final class ColorResolver {
 
         return switch (state) {
 
-            case IDLE -> ColorUtil.applyOpacity(
-                    ConfigManager.idleColor(),
-                    ConfigManager.idleOpacity()
-            );
+            case IDLE -> ConfigManager.idleColor();
 
-            case TARGET -> ColorUtil.applyOpacity(
-                    ConfigManager.targetColor(),
-                    ConfigManager.targetOpacity()
-            );
+            case TARGET -> ConfigManager.targetColor();
 
-            case SHIELD -> ColorUtil.applyOpacity(
-                    ConfigManager.shieldColor(),
-                    ConfigManager.shieldOpacity()
-            );
+            case SHIELD -> ConfigManager.shieldColor();
         };
     }
 }

@@ -84,6 +84,20 @@ public final class ConfigManager {
     public static void setShieldColor(int color) {
         CONFIG.shieldColor = color;
     }
+    public static void reset() {
+
+        CONFIG.style = CrosshairStyle.CORNER;
+
+        CONFIG.size = 85;
+
+        CONFIG.idleOpacity = 100;
+        CONFIG.targetOpacity = 100;
+        CONFIG.shieldOpacity = 100;
+
+        CONFIG.idleColor = 0xFFFFFFFF;
+        CONFIG.targetColor = 0xFF00FF00;
+        CONFIG.shieldColor = 0xFFFF0000;
+    }
 
     /*
      * Internal access.

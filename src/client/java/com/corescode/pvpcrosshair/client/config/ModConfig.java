@@ -16,13 +16,13 @@ public final class ModConfig {
      * (5% increments in UI later)
      */
 
-    public int size = 95;
+    public int size = 85;
 
     /*
      * Opacity
      */
 
-    public int idleOpacity = 60;
+    public int idleOpacity = 90;
 
     public int targetOpacity = 100;
 

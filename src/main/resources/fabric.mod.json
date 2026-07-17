@@ -18,6 +18,9 @@
 		],
 		"client": [
 			"com.corescode.pvpcrosshair.client.PvPCrosshairClient"
+		],
+		"modmenu": [
+			"com.corescode.pvpcrosshair.client.config.ModMenuIntegration"
 		]
 	},
 	"mixins": [
