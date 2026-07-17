@@ -30,8 +30,7 @@ public final class CrosshairRenderer {
         TargetState state = TargetDetector.getState();
         int color = ColorResolver.getColor(state);
 
-        CrosshairStyle style =
-                ConfigManager.get().crosshairStyle;
+        CrosshairStyle style = ConfigManager.style();
 
         switch (state) {
 

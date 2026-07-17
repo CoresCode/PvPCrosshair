@@ -1,25 +1,95 @@
 package com.corescode.pvpcrosshair.client.config;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import com.corescode.pvpcrosshair.client.render.CrosshairStyle;
 
 public final class ConfigManager {
+
+    private static final ModConfig CONFIG = new ModConfig();
 
     private ConfigManager() {
     }
 
-    public static void register() {
+    /*
+     * ============================
+     * Getters
+     * ============================
+     */
 
-        AutoConfig.register(
-                ModConfig.class,
-                Toml4jConfigSerializer::new
-        );
+    public static CrosshairStyle style() {
+        return CONFIG.style;
     }
 
-    public static ModConfig get() {
+    public static int size() {
+        return CONFIG.size;
+    }
 
-        return AutoConfig
-                .getConfigHolder(ModConfig.class)
-                .getConfig();
+    public static int idleOpacity() {
+        return CONFIG.idleOpacity;
+    }
+
+    public static int targetOpacity() {
+        return CONFIG.targetOpacity;
+    }
+
+    public static int shieldOpacity() {
+        return CONFIG.shieldOpacity;
+    }
+
+    public static int idleColor() {
+        return CONFIG.idleColor;
+    }
+
+    public static int targetColor() {
+        return CONFIG.targetColor;
+    }
+
+    public static int shieldColor() {
+        return CONFIG.shieldColor;
+    }
+
+    /*
+     * ============================
+     * Setters
+     * ============================
+     */
+
+    public static void setStyle(CrosshairStyle style) {
+        CONFIG.style = style;
+    }
+
+    public static void setSize(int size) {
+        CONFIG.size = size;
+    }
+
+    public static void setIdleOpacity(int opacity) {
+        CONFIG.idleOpacity = opacity;
+    }
+
+    public static void setTargetOpacity(int opacity) {
+        CONFIG.targetOpacity = opacity;
+    }
+
+    public static void setShieldOpacity(int opacity) {
+        CONFIG.shieldOpacity = opacity;
+    }
+
+    public static void setIdleColor(int color) {
+        CONFIG.idleColor = color;
+    }
+
+    public static void setTargetColor(int color) {
+        CONFIG.targetColor = color;
+    }
+
+    public static void setShieldColor(int color) {
+        CONFIG.shieldColor = color;
+    }
+
+    /*
+     * Internal access.
+     */
+
+    static ModConfig config() {
+        return CONFIG;
     }
 }
