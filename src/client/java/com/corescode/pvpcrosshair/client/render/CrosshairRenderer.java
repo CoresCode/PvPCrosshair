@@ -4,9 +4,12 @@ import com.corescode.pvpcrosshair.client.color.ColorResolver;
 import com.corescode.pvpcrosshair.client.detection.TargetDetector;
 import com.corescode.pvpcrosshair.client.detection.TargetState;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public final class CrosshairRenderer {
+
+    private static final Minecraft MC = Minecraft.getInstance();
 
     private CrosshairRenderer() {
     }
@@ -15,6 +18,9 @@ public final class CrosshairRenderer {
             GuiGraphicsExtractor graphics,
             DeltaTracker deltaTracker
     ) {
+        if (!shouldRender()) {
+            return;
+        }
 
         int cx = graphics.guiWidth() / 2;
         int cy = graphics.guiHeight() / 2;
@@ -57,6 +63,19 @@ public final class CrosshairRenderer {
                 }
             }
         }
+    }
+
+    private static boolean shouldRender() {
+
+        if (MC.player == null) {
+            return false;
+        }
+
+        if (!MC.options.getCameraType().isFirstPerson()) {
+            return false;
+        }
+
+        return true;
     }
 
     /*
