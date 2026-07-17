@@ -1,6 +1,7 @@
 package com.corescode.pvpcrosshair.client.render;
 
 import com.corescode.pvpcrosshair.client.color.ColorResolver;
+import com.corescode.pvpcrosshair.client.config.ConfigManager;
 import com.corescode.pvpcrosshair.client.detection.TargetDetector;
 import com.corescode.pvpcrosshair.client.detection.TargetState;
 import net.minecraft.client.DeltaTracker;
@@ -18,6 +19,7 @@ public final class CrosshairRenderer {
             GuiGraphicsExtractor graphics,
             DeltaTracker deltaTracker
     ) {
+
         if (!shouldRender()) {
             return;
         }
@@ -28,24 +30,43 @@ public final class CrosshairRenderer {
         TargetState state = TargetDetector.getState();
         int color = ColorResolver.getColor(state);
 
-        // TODO: Replace with config value later
-        CrosshairStyle style = CrosshairStyle.STAR;
+        CrosshairStyle style =
+                ConfigManager.get().crosshairStyle;
 
         switch (state) {
 
-            case IDLE -> drawIdle(graphics, cx, cy, color);
+            case IDLE -> {
+
+                drawVanilla(graphics, cx, cy, color);
+            }
 
             case TARGET -> {
 
                 switch (style) {
 
-                    case VANILLA -> drawVanilla(graphics, cx, cy, color);
+                    case VANILLA -> {
 
-                    case STAR -> drawStar(graphics, cx, cy, color);
+                        drawVanilla(graphics, cx, cy, color);
+                    }
 
-                    case CHEVRON -> drawChevron(graphics, cx, cy, color);
+                    case STAR -> {
 
-                    case CORNER -> drawCorner(graphics, cx, cy, color);
+                        drawVanilla(graphics, cx, cy, color);
+
+                        drawDiagonals(graphics, cx, cy, color);
+                    }
+
+                    case CORNER -> {
+
+                        drawVanilla(graphics, cx, cy, color);
+
+                        drawCorner(graphics, cx, cy, color);
+                    }
+
+                    case CHEVRON -> {
+
+                        drawChevron(graphics, cx, cy, color);
+                    }
                 }
             }
 
@@ -53,13 +74,29 @@ public final class CrosshairRenderer {
 
                 switch (style) {
 
-                    case VANILLA -> drawVanilla(graphics, cx, cy, color);
+                    case VANILLA -> {
 
-                    case STAR -> drawStar(graphics, cx, cy, color);
+                        drawVanilla(graphics, cx, cy, color);
+                    }
 
-                    case CHEVRON -> drawChevron(graphics, cx, cy, color);
+                    case STAR -> {
 
-                    case CORNER -> drawCorner(graphics, cx, cy, color);
+                        drawVanilla(graphics, cx, cy, color);
+
+                        drawDiagonals(graphics, cx, cy, color);
+                    }
+
+                    case CORNER -> {
+
+                        drawVanilla(graphics, cx, cy, color);
+
+                        drawCorner(graphics, cx, cy, color);
+                    }
+
+                    case CHEVRON -> {
+
+                        drawChevron(graphics, cx, cy, color);
+                    }
                 }
             }
         }
@@ -91,16 +128,9 @@ public final class CrosshairRenderer {
             int color
     ) {
 
-        drawVerticalArm(graphics, cx, cy, true, color);
-        drawVerticalArm(graphics, cx, cy, false, color);
+        drawVanilla(graphics, cx, cy, color);
 
-        drawHorizontalArm(graphics, cx, cy, true, color);
-        drawHorizontalArm(graphics, cx, cy, false, color);
-
-        drawDiagonal(graphics, cx, cy, -1, -1, color);
-        drawDiagonal(graphics, cx, cy, 1, -1, color);
-        drawDiagonal(graphics, cx, cy, -1, 1, color);
-        drawDiagonal(graphics, cx, cy, 1, 1, color);
+        drawDiagonals(graphics, cx, cy, color);
     }
 
     private static void drawVanilla(
@@ -117,6 +147,19 @@ public final class CrosshairRenderer {
         drawHorizontalArm(graphics, cx, cy, false, color);
     }
 
+    private static void drawDiagonals(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy,
+            int color
+    ) {
+
+        drawDiagonal(graphics, cx, cy, -1, -1, color);
+        drawDiagonal(graphics, cx, cy, 1, -1, color);
+        drawDiagonal(graphics, cx, cy, -1, 1, color);
+        drawDiagonal(graphics, cx, cy, 1, 1, color);
+    }
+
     private static void drawChevron(
             GuiGraphicsExtractor graphics,
             int cx,
@@ -131,19 +174,6 @@ public final class CrosshairRenderer {
         drawDiagonalSegment(graphics, cx + 2, cy + 1, 1, 1, color);
     }
 
-    private static void drawIdle(
-            GuiGraphicsExtractor graphics,
-            int cx,
-            int cy,
-            int color
-    ) {
-
-        graphics.fill(cx, cy - 2, cx + 1, cy, color);
-        graphics.fill(cx, cy + 1, cx + 1, cy + 3, color);
-
-        graphics.fill(cx - 2, cy, cx, cy + 1, color);
-        graphics.fill(cx + 1, cy, cx + 3, cy + 1, color);
-    }
 
     private static void drawCorner(
             GuiGraphicsExtractor graphics,
@@ -152,14 +182,55 @@ public final class CrosshairRenderer {
             int color
     ) {
 
-        // TODO
-    }
+        // =========================
+        // Top Left
+        // =========================
+        pixel(graphics, cx - 4, cy - 4, color);
+        pixel(graphics, cx - 3, cy - 4, color);
+        pixel(graphics, cx - 4, cy - 3, color);
 
+        // =========================
+        // Top Right
+        // =========================
+        pixel(graphics, cx + 3, cy - 4, color);
+        pixel(graphics, cx + 4, cy - 4, color);
+        pixel(graphics, cx + 4, cy - 3, color);
+
+        // =========================
+        // Bottom Left
+        // =========================
+        pixel(graphics, cx - 4, cy + 3, color);
+        pixel(graphics, cx - 4, cy + 4, color);
+        pixel(graphics, cx - 3, cy + 4, color);
+
+        // =========================
+        // Bottom Right
+        // =========================
+        pixel(graphics, cx + 4, cy + 3, color);
+        pixel(graphics, cx + 3, cy + 4, color);
+        pixel(graphics, cx + 4, cy + 4, color);
+    }
     /*
      * ============================
      * Arm Rendering
      * ============================
      */
+
+    private static void pixel(
+            GuiGraphicsExtractor graphics,
+            int x,
+            int y,
+            int color
+    ) {
+
+        graphics.fill(
+                x,
+                y,
+                x + 1,
+                y + 1,
+                color
+        );
+    }
 
     private static void drawVerticalArm(
             GuiGraphicsExtractor graphics,

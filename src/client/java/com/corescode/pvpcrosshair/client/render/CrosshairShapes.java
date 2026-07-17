@@ -6,13 +6,14 @@ public final class CrosshairShapes {
     }
 
     /*
-     * Final prototype measurements.
+     * Base crosshair dimensions.
      */
     public static final int INNER_RADIUS = 2;
-    public static final int OUTER_RADIUS = 5;
+
+    public static final int OUTER_RADIUS = 6;
 
     /*
      * Diagonal arm length.
      */
-    public static final int DIAGONAL_LENGTH = 2;
+    public static final int DIAGONAL_LENGTH = 3;
 }
