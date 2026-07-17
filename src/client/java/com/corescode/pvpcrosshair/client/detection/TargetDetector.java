@@ -15,7 +15,6 @@ public final class TargetDetector {
     public static TargetState getState() {
 
         if (MC.player == null || MC.level == null) {
-
             return TargetState.IDLE;
         }
 
@@ -29,19 +28,11 @@ public final class TargetDetector {
             return TargetState.IDLE;
         }
 
-        if (
-                livingEntity.isUsingItem()
-                        && livingEntity.getUseItem().is(Items.SHIELD)
-        ) {
-            TargetState state = TargetState.SHIELD;
-            System.out.println(state);
-            return state;
-
-
+        if (livingEntity.isUsingItem()
+                && livingEntity.getUseItem().is(Items.SHIELD)) {
+            return TargetState.SHIELD;
         }
-        TargetState state = TargetState.TARGET;
-        System.out.println(state);
-        return state;
 
+        return TargetState.TARGET;
     }
 }
