@@ -1,0 +1,36 @@
+{
+	"schemaVersion": 1,
+	"id": "pvpcrosshair",
+	"version": "${version}",
+	"name": "PvP Crosshair",
+	"description": "Lightweight customizable PvP crosshair with entity and shield detection.",
+	"authors": [
+		"CoresCode"
+	],
+	"contact": {
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/pvpcrosshair/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.corescode.pvpcrosshair.PvPCrosshair"
+		],
+		"client": [
+			"com.corescode.pvpcrosshair.client.PvPCrosshairClient"
+		]
+	},
+	"mixins": [
+		"pvpcrosshair.mixins.json",
+		{
+			"config": "pvpcrosshair.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
