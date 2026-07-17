@@ -18,7 +18,18 @@ public final class CrosshairRenderer {
         int cx = graphics.guiWidth() / 2;
         int cy = graphics.guiHeight() / 2;
 
-        drawStar(graphics, cx, cy);
+        CrosshairStyle style = CrosshairStyle.DIAMOND;
+
+        switch (style) {
+
+            case VANILLA -> drawVanilla(graphics, cx, cy);
+
+            case STAR -> drawStar(graphics, cx, cy);
+
+            case DIAMOND -> drawDiamond(graphics, cx, cy);
+
+            case CORNER -> drawCorner(graphics, cx, cy);
+        }
     }
 
     /*
@@ -43,6 +54,42 @@ public final class CrosshairRenderer {
         drawDiagonal(graphics, cx, cy, 1, -1);
         drawDiagonal(graphics, cx, cy, -1, 1);
         drawDiagonal(graphics, cx, cy, 1, 1);
+    }
+    private static void drawVanilla(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy
+    ) {
+
+        drawVerticalArm(graphics, cx, cy, true);
+        drawVerticalArm(graphics, cx, cy, false);
+
+        drawHorizontalArm(graphics, cx, cy, true);
+        drawHorizontalArm(graphics, cx, cy, false);
+    }
+
+    private static void drawDiamond(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy
+    ) {
+
+        // Left Chevron
+        drawDiagonalSegment(graphics, cx - 2, cy - 1, -1, -1);
+        drawDiagonalSegment(graphics, cx - 2, cy + 1, -1, 1);
+
+        // Right Chevron
+        drawDiagonalSegment(graphics, cx + 2, cy - 1, 1, -1);
+        drawDiagonalSegment(graphics, cx + 2, cy + 1, 1, 1);
+    }
+
+    private static void drawCorner(
+            GuiGraphicsExtractor graphics,
+            int cx,
+            int cy
+    ) {
+
+        // TODO
     }
 
     /*
@@ -117,6 +164,26 @@ public final class CrosshairRenderer {
                     y,
                     x + 1,
                     y + 1,
+                    COLOR
+            );
+        }
+    }
+
+    private static void drawDiagonalSegment(
+            GuiGraphicsExtractor graphics,
+            int startX,
+            int startY,
+            int dx,
+            int dy
+    ) {
+
+        for (int i = 0; i < 3; i++) {
+
+            graphics.fill(
+                    startX + dx * i,
+                    startY + dy * i,
+                    startX + dx * i + 1,
+                    startY + dy * i + 1,
                     COLOR
             );
         }

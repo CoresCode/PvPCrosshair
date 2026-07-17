@@ -1,4 +1,10 @@
 package com.corescode.pvpcrosshair.client.render;
 
-public class CrosshairStyle {
+public enum CrosshairStyle {
+
+    VANILLA,
+    STAR,
+    DIAMOND,
+    CORNER
+
 }
