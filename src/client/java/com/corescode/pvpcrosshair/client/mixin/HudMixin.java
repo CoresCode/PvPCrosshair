@@ -1,29 +1,41 @@
 package com.corescode.pvpcrosshair.client.mixin;
 
-import net.minecraft.client.DeltaTracker;
+import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.Hud;
+import net.minecraft.resources.Identifier;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Hud.class)
 public abstract class HudMixin {
 
-    @Inject(
+    @Shadow
+    @Final
+    private static Identifier CROSSHAIR_SPRITE;
+
+    @WrapWithCondition(
             method = "extractCrosshair",
-            at = @At("HEAD"),
-            cancellable = true
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"
+            )
     )
-    private void pvpcrosshair$hideVanillaCrosshair(
+    private boolean pvpcrosshair$skipVanillaCrosshair(
             GuiGraphicsExtractor graphics,
-            DeltaTracker deltaTracker,
-            CallbackInfo ci
+            RenderPipeline pipeline,
+            Identifier sprite,
+            int x,
+            int y,
+            int width,
+            int height
     ) {
 
-        ci.cancel();
-
+        return sprite != CROSSHAIR_SPRITE;
     }
 }
