@@ -8,14 +8,14 @@
 		"CoresCode"
 	],
 	"contact": {
+		"homepage": "https://github.com/CoresCode/PvPCrosshair",
+		"sources": "https://github.com/CoresCode/PvPCrosshair",
+		"issues": "https://github.com/CoresCode/PvPCrosshair/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/pvpcrosshair/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
-		"main": [
-			"com.corescode.pvpcrosshair.PvPCrosshair"
-		],
 		"client": [
 			"com.corescode.pvpcrosshair.client.PvPCrosshairClient"
 		],
@@ -24,7 +24,6 @@
 		]
 	},
 	"mixins": [
-		"pvpcrosshair.mixins.json",
 		{
 			"config": "pvpcrosshair.client.mixins.json",
 			"environment": "client"
@@ -32,10 +31,12 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.19.3",
-		"minecraft": "~26.2",
-		"java": ">=25",
-		"fabric-api": "*",
-		"cloth-config": "*",
-		"modmenu": "*"
+		"minecraft": "${minecraft_dependency}",
+		"java": ">=${java_version}",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*",
+		"cloth-config": "*"
 	}
 }

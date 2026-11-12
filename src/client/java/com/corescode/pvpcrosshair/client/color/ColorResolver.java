@@ -12,11 +12,29 @@ public final class ColorResolver {
 
         return switch (state) {
 
-            case IDLE -> ConfigManager.idleColor();
+            case IDLE -> applyOpacity(
+                    ConfigManager.idleColor(),
+                    ConfigManager.idleOpacity()
+            );
 
-            case TARGET -> ConfigManager.targetColor();
+            case TARGET -> applyOpacity(
+                    ConfigManager.targetColor(),
+                    ConfigManager.targetOpacity()
+            );
 
-            case SHIELD -> ConfigManager.shieldColor();
+            case SHIELD -> applyOpacity(
+                    ConfigManager.shieldColor(),
+                    ConfigManager.shieldOpacity()
+            );
         };
+    }
+
+    private static int applyOpacity(int color, int opacityPercent) {
+
+        opacityPercent = Math.max(0, Math.min(100, opacityPercent));
+
+        int alpha = Math.round(opacityPercent * 255F / 100F);
+
+        return (color & 0x00FFFFFF) | (alpha << 24);
     }
 }

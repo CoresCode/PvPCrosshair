@@ -38,7 +38,7 @@ Designed to be clean, fast, and fully configurable.
 
 ## Requirements
 
-- Minecraft 26.2
+- Minecraft 1.21.11, 26.1.x, 26.2 or 26.3
 - Fabric Loader
 - Fabric API
 
@@ -47,20 +47,42 @@ Designed to be clean, fast, and fully configurable.
 - Mod Menu
 - Cloth Config
 
+Both are needed only for the in-game configuration screen. Without them the mod still works and reads its settings from `config/pvpcrosshair.json`.
+
 ## Installation
 
 1. Install Fabric Loader.
 2. Install Fabric API.
-3. Place the mod into your `mods` folder.
-4. (Optional) Install Mod Menu and Cloth Config for the in-game configuration screen.
+3. Download the jar that matches your Minecraft version, e.g. `pvpcrosshair-1.0.0+mc26.3.jar`.
+4. Place it into your `mods` folder.
+5. (Optional) Install Mod Menu and Cloth Config for the in-game configuration screen.
 
 ## Compatibility
 
-Currently working on:
+| Minecraft | Jar |
+|---|---|
+| 1.21.11 | `pvpcrosshair-<version>+mc1.21.11.jar` |
+| 26.1, 26.1.1, 26.1.2 | `pvpcrosshair-<version>+mc26.1.jar` |
+| 26.2 | `pvpcrosshair-<version>+mc26.2.jar` |
+| 26.3 | `pvpcrosshair-<version>+mc26.3.jar` |
 
-- ✅ Minecraft 26.2
+## Building
 
-Support for additional Minecraft 1.21.x versions is planned.
+All Minecraft versions are built from this one project:
+
+```
+./gradlew build
+```
+
+The jars end up in `build/libs/`. To build a single version use `./gradlew :26.3:build`, and to start a test client `./gradlew :26.3:runClient`.
+
+Project layout:
+
+- `src/` - code shared by every Minecraft version
+- `versions/<mc>/src/` - the few classes that differ per Minecraft version (HUD hook and mixin)
+- `versions/<mc>/gradle.properties` - Minecraft and dependency versions for that build
+
+Building needs JDK 25.
 
 ## License
 

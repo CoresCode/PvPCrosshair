@@ -4,10 +4,8 @@ import com.corescode.pvpcrosshair.client.color.ColorResolver;
 import com.corescode.pvpcrosshair.client.config.ConfigManager;
 import com.corescode.pvpcrosshair.client.detection.TargetDetector;
 import com.corescode.pvpcrosshair.client.detection.TargetState;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
@@ -15,7 +13,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraft.core.BlockPos;
 import org.jspecify.annotations.Nullable;
 
 public final class CrosshairRenderer {
@@ -25,14 +22,12 @@ public final class CrosshairRenderer {
     private CrosshairRenderer() {
     }
 
-    public static void extractRenderState(
-            GuiGraphicsExtractor graphics,
-            DeltaTracker deltaTracker
-    ) {
+    public static void render(Canvas graphics) {
 
         if (!shouldRender()) {
             return;
         }
+
 
         int cx = graphics.guiWidth() / 2;
         int cy = graphics.guiHeight() / 2;
@@ -129,6 +124,7 @@ public final class CrosshairRenderer {
             return canRenderCrosshairForSpectator(MC.hitResult);
         }
 
+
         return true;
     }
 
@@ -140,7 +136,7 @@ public final class CrosshairRenderer {
 
 
     private static void drawVanilla(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             int color
@@ -154,7 +150,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawIdleVanilla(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             int color
@@ -168,7 +164,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawDiagonals(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             int color
@@ -181,7 +177,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawChevron(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             int color
@@ -196,7 +192,7 @@ public final class CrosshairRenderer {
 
 
     private static void drawCorner(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             int color
@@ -237,7 +233,7 @@ public final class CrosshairRenderer {
      */
 
     private static void pixel(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int x,
             int y,
             int color
@@ -253,7 +249,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawScaledVerticalArm(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             boolean top,
@@ -278,7 +274,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawScaledHorizontalArm(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             boolean left,
@@ -303,7 +299,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawIdleVerticalArm(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             boolean top,
@@ -328,7 +324,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawIdleHorizontalArm(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             boolean left,
@@ -353,7 +349,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawDiagonal(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int cx,
             int cy,
             int dx,
@@ -377,7 +373,7 @@ public final class CrosshairRenderer {
     }
 
     private static void drawDiagonalSegment(
-            GuiGraphicsExtractor graphics,
+            Canvas graphics,
             int startX,
             int startY,
             int dx,
